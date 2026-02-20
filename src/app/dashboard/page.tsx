@@ -31,6 +31,7 @@ import {
 } from "recharts";
 
 import { TopBar } from "@/components/layout/top-bar";
+import { useMobileMenu } from "@/app/dashboard/layout";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
@@ -58,12 +59,12 @@ function StatCard({
 }) {
   return (
     <Card className="relative overflow-hidden">
-      <CardContent className="p-6">
+      <CardContent className="p-4 sm:p-6">
         <div className="flex items-start justify-between">
-          <div className="space-y-2">
-            <p className="text-sm font-medium text-slate-500">{title}</p>
-            <p className="text-3xl font-bold text-slate-900">{value}</p>
-            <div className="flex items-center gap-1">
+          <div className="space-y-1 sm:space-y-2 min-w-0">
+            <p className="text-xs sm:text-sm font-medium text-slate-500 truncate">{title}</p>
+            <p className="text-xl sm:text-3xl font-bold text-slate-900">{value}</p>
+            <div className="flex items-center gap-1 flex-wrap">
               {changeType === "up" ? (
                 <ArrowUpRight className="w-3.5 h-3.5 text-emerald-600" />
               ) : (
@@ -76,13 +77,13 @@ function StatCard({
               >
                 {change}
               </span>
-              <span className="text-xs text-slate-400">vs mes anterior</span>
+              <span className="text-xs text-slate-400 hidden sm:inline">vs mes anterior</span>
             </div>
           </div>
           <div
-            className={`flex items-center justify-center w-12 h-12 rounded-xl ${iconBg}`}
+            className={`flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-xl shrink-0 ${iconBg}`}
           >
-            <Icon className={`w-6 h-6 ${iconColor}`} />
+            <Icon className={`w-5 h-5 sm:w-6 sm:h-6 ${iconColor}`} />
           </div>
         </div>
       </CardContent>
@@ -95,6 +96,7 @@ const COLORS = ["#3B82F6", "#10B981", "#F59E0B", "#EF4444", "#8B5CF6"];
 export default function DashboardPage() {
   const { stats, weeklyActivity, scoreDistribution, topStudents, classes, user, studentProgress } = useData();
   const router = useRouter();
+  const { openMobileMenu } = useMobileMenu();
   const [copiedCode, setCopiedCode] = useState<string | null>(null);
 
   const handleCopyCode = (code: string) => {
@@ -115,11 +117,12 @@ export default function DashboardPage() {
       <TopBar
         title="Dashboard"
         subtitle={`Bienvenido de vuelta, ${user.name}`}
+        onMenuClick={openMobileMenu}
       />
 
-      <div className="p-6 space-y-6">
+      <div className="p-4 sm:p-6 space-y-4 sm:space-y-6">
         {/* ─── Stats Grid ────────────────────────────── */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
           <StatCard
             title="Total Estudiantes"
             value={stats.totalStudents}
@@ -403,11 +406,11 @@ export default function DashboardPage() {
             </div>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
               {classes.slice(0, 4).map((cls) => (
                 <div
                   key={cls.classId}
-                  className="group p-4 rounded-xl border border-slate-200/60 bg-slate-50/50 hover:bg-white hover:shadow-md transition-all duration-200 cursor-pointer"
+                  className="group p-3 sm:p-4 rounded-xl border border-slate-200/60 bg-slate-50/50 hover:bg-white hover:shadow-md transition-all duration-200 cursor-pointer"
                   onClick={() => router.push("/dashboard/classes")}
                 >
                   <div className="flex items-start justify-between mb-3">

@@ -24,6 +24,7 @@ import {
 } from "recharts";
 
 import { TopBar } from "@/components/layout/top-bar";
+import { useMobileMenu } from "@/app/dashboard/layout";
 import {
   Card,
   CardContent,
@@ -245,13 +246,15 @@ export default function StudentsPage() {
     URL.revokeObjectURL(url);
   };
 
+  const { openMobileMenu } = useMobileMenu();
+
   return (
     <div className="min-h-screen">
-      <TopBar title="Estudiantes" subtitle="Seguimiento del progreso de tus estudiantes" />
+      <TopBar title="Estudiantes" subtitle="Seguimiento del progreso de tus estudiantes" onMenuClick={openMobileMenu} />
 
-      <div className="p-6 space-y-6">
+      <div className="p-4 sm:p-6 space-y-4 sm:space-y-6">
         {/* Summary */}
-        <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
           <Card>
             <CardContent className="p-5 flex items-center gap-4">
               <div className="flex items-center justify-center w-11 h-11 rounded-xl bg-blue-50"><Users className="w-5 h-5 text-blue-600" /></div>

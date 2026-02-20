@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 
 import { TopBar } from "@/components/layout/top-bar";
+import { useMobileMenu } from "@/app/dashboard/layout";
 import {
   Card,
   CardContent,
@@ -93,16 +94,18 @@ export default function SettingsPage() {
     setConfirmPassword("");
   };
 
+  const { openMobileMenu } = useMobileMenu();
+
   return (
     <div className="min-h-screen">
-      <TopBar title="Configuración" subtitle="Administra tu cuenta y la de tu institución" />
+      <TopBar title="Configuración" subtitle="Administra tu cuenta y la de tu institución" onMenuClick={openMobileMenu} />
 
-      <div className="p-6 max-w-4xl">
+      <div className="p-4 sm:p-6 max-w-4xl">
         <Tabs defaultValue="school">
-          <TabsList className="mb-6">
-            <TabsTrigger value="school" className="gap-2"><School className="w-4 h-4" />Institución</TabsTrigger>
-            <TabsTrigger value="profile" className="gap-2"><User className="w-4 h-4" />Perfil</TabsTrigger>
-            <TabsTrigger value="license" className="gap-2"><Shield className="w-4 h-4" />Licencia</TabsTrigger>
+          <TabsList className="mb-6 w-full sm:w-auto overflow-x-auto">
+            <TabsTrigger value="school" className="gap-1.5 sm:gap-2 text-xs sm:text-sm"><School className="w-3.5 h-3.5 sm:w-4 sm:h-4" /><span className="hidden sm:inline">Institución</span><span className="sm:hidden">Escuela</span></TabsTrigger>
+            <TabsTrigger value="profile" className="gap-1.5 sm:gap-2 text-xs sm:text-sm"><User className="w-3.5 h-3.5 sm:w-4 sm:h-4" />Perfil</TabsTrigger>
+            <TabsTrigger value="license" className="gap-1.5 sm:gap-2 text-xs sm:text-sm"><Shield className="w-3.5 h-3.5 sm:w-4 sm:h-4" />Licencia</TabsTrigger>
           </TabsList>
 
           {/* School Tab */}

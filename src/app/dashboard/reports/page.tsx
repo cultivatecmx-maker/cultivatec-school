@@ -25,6 +25,7 @@ import {
 } from "lucide-react";
 
 import { TopBar } from "@/components/layout/top-bar";
+import { useMobileMenu } from "@/app/dashboard/layout";
 import {
   Card,
   CardContent,
@@ -147,30 +148,35 @@ export default function ReportsPage() {
     showToast("Archivo CSV exportado exitosamente", "success");
   };
 
+  const { openMobileMenu } = useMobileMenu();
+
   return (
     <div className="min-h-screen">
       <TopBar
         title="Reportes"
         subtitle="Análisis detallado del rendimiento de tu escuela"
+        onMenuClick={openMobileMenu}
       />
 
-      <div className="p-6 space-y-6">
+      <div className="p-4 sm:p-6 space-y-4 sm:space-y-6">
         {/* ─── Actions ────────────────────────────────── */}
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
           <div className="flex items-center gap-2">
             <Badge variant="info" className="gap-1">
               <Calendar className="w-3 h-3" />
               Febrero 2026
             </Badge>
           </div>
-          <div className="flex items-center gap-2">
-            <Button variant="outline" size="sm" className="gap-2" onClick={handleExportPdf} disabled={loadingPdf}>
+          <div className="flex items-center gap-2 w-full sm:w-auto">
+            <Button variant="outline" size="sm" className="gap-2 flex-1 sm:flex-none" onClick={handleExportPdf} disabled={loadingPdf}>
               {loadingPdf ? <Loader2 className="w-4 h-4 animate-spin" /> : <FileText className="w-4 h-4" />}
-              {loadingPdf ? "Generando..." : "Generar Reporte"}
+              <span className="hidden sm:inline">{loadingPdf ? "Generando..." : "Generar Reporte"}</span>
+              <span className="sm:hidden">{loadingPdf ? "..." : "PDF"}</span>
             </Button>
-            <Button variant="outline" size="sm" className="gap-2" onClick={handleExportExcel} disabled={loadingExcel}>
+            <Button variant="outline" size="sm" className="gap-2 flex-1 sm:flex-none" onClick={handleExportExcel} disabled={loadingExcel}>
               {loadingExcel ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
-              {loadingExcel ? "Exportando..." : "Exportar CSV"}
+              <span className="hidden sm:inline">{loadingExcel ? "Exportando..." : "Exportar CSV"}</span>
+              <span className="sm:hidden">{loadingExcel ? "..." : "CSV"}</span>
             </Button>
           </div>
         </div>

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
@@ -19,12 +19,15 @@ import {
   LogOut,
   School,
   BookOpen,
+  X,
 } from "lucide-react";
 
 interface SidebarProps {
   userName: string;
   schoolName: string;
   userRole: string;
+  mobileOpen?: boolean;
+  onMobileClose?: () => void;
 }
 
 const navigation = [
@@ -55,8 +58,8 @@ const navigation = [
   },
 ];
 
-export function Sidebar({ userName, schoolName, userRole }: SidebarProps) {
-  const [collapsed, setCollapsed] = useState(false);
+export function Sidebar({ userName, schoolName, userRole, mobileOpen = false, onMobileClose }: SidebarProps) {
+  const [collapsed, setCollapsed] = React.useState(false);
   const pathname = usePathname();
 
   const initials = userName
@@ -66,32 +69,35 @@ export function Sidebar({ userName, schoolName, userRole }: SidebarProps) {
     .slice(0, 2)
     .toUpperCase();
 
-  return (
-    <aside
-      className={cn(
-        "flex flex-col h-screen bg-white border-r border-blue-100 transition-all duration-300 ease-in-out sticky top-0 z-40",
-        collapsed ? "w-[72px]" : "w-[260px]"
-      )}
-    >
+  const sidebarContent = (
+    <>
       {/* Logo / Brand */}
-      <div className="flex items-center gap-3 px-4 h-16 border-b border-blue-100 bg-gradient-to-r from-blue-50/80 to-transparent">
-        <div className="flex items-center justify-center w-9 h-9 rounded-lg bg-white shadow-sm border border-blue-100 shrink-0 overflow-hidden p-0.5">
-          <img src="/logo.png" alt="CultivaTec" className="w-full h-full object-contain" />
-        </div>
-        {!collapsed && (
-          <div className="flex flex-col min-w-0">
-            <span className="text-sm font-bold text-slate-900 truncate">
-              CultivaTec
-            </span>
-            <span className="text-[10px] font-medium text-slate-400 uppercase tracking-wider">
-              Schools
-            </span>
+      <div className="flex items-center justify-between px-4 h-16 border-b border-blue-100 bg-gradient-to-r from-blue-50/80 to-transparent">
+        <div className="flex items-center gap-3">
+          <div className="flex items-center justify-center w-9 h-9 rounded-lg bg-white shadow-sm border border-blue-100 shrink-0 overflow-hidden p-0.5">
+            <img src="/logo.png" alt="CultivaTec" className="w-full h-full object-contain" />
           </div>
+          {(!collapsed || mobileOpen) && (
+            <div className="flex flex-col min-w-0">
+              <span className="text-sm font-bold text-slate-900 truncate">
+                CultivaTec
+              </span>
+              <span className="text-[10px] font-medium text-slate-400 uppercase tracking-wider">
+                Schools
+              </span>
+            </div>
+          )}
+        </div>
+        {/* Close button — mobile only */}
+        {mobileOpen && onMobileClose && (
+          <Button variant="ghost" size="icon" className="md:hidden h-8 w-8" onClick={onMobileClose}>
+            <X className="w-5 h-5 text-slate-500" />
+          </Button>
         )}
       </div>
 
       {/* School info */}
-      {!collapsed && (
+      {(!collapsed || mobileOpen) && (
         <div className="px-4 py-3 border-b border-slate-100">
           <div className="flex items-center gap-2">
             <School className="w-4 h-4 text-slate-400 shrink-0" />
@@ -116,6 +122,7 @@ export function Sidebar({ userName, schoolName, userRole }: SidebarProps) {
             <Link
               key={item.name}
               href={item.href}
+              onClick={() => onMobileClose?.()}
               className={cn(
                 "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 group",
                 isActive
@@ -131,7 +138,7 @@ export function Sidebar({ userName, schoolName, userRole }: SidebarProps) {
                     : "text-slate-400 group-hover:text-slate-600"
                 )}
               />
-              {!collapsed && <span className="truncate">{item.name}</span>}
+              {(!collapsed || mobileOpen) && <span className="truncate">{item.name}</span>}
             </Link>
           );
         })}
@@ -144,7 +151,7 @@ export function Sidebar({ userName, schoolName, userRole }: SidebarProps) {
         <div
           className={cn(
             "flex items-center gap-3 p-2 rounded-lg",
-            collapsed ? "justify-center" : ""
+            collapsed && !mobileOpen ? "justify-center" : ""
           )}
         >
           <Avatar className="h-9 w-9 shrink-0">
@@ -152,7 +159,7 @@ export function Sidebar({ userName, schoolName, userRole }: SidebarProps) {
               {initials}
             </AvatarFallback>
           </Avatar>
-          {!collapsed && (
+          {(!collapsed || mobileOpen) && (
             <div className="flex-1 min-w-0">
               <p className="text-sm font-medium text-slate-900 truncate">
                 {userName}
@@ -162,12 +169,12 @@ export function Sidebar({ userName, schoolName, userRole }: SidebarProps) {
           )}
         </div>
 
-        {/* Collapse toggle */}
+        {/* Collapse toggle — hidden on mobile overlay */}
         <Button
           variant="ghost"
           size="sm"
           className={cn(
-            "w-full mt-2 text-slate-400 hover:text-slate-600",
+            "w-full mt-2 text-slate-400 hover:text-slate-600 hidden md:flex",
             collapsed ? "px-0 justify-center" : ""
           )}
           onClick={() => setCollapsed(!collapsed)}
@@ -182,6 +189,30 @@ export function Sidebar({ userName, schoolName, userRole }: SidebarProps) {
           )}
         </Button>
       </div>
-    </aside>
+    </>
+  );
+
+  return (
+    <>
+      {/* Desktop sidebar */}
+      <aside
+        className={cn(
+          "hidden md:flex flex-col h-screen bg-white border-r border-blue-100 transition-all duration-300 ease-in-out sticky top-0 z-40",
+          collapsed ? "w-[72px]" : "w-[260px]"
+        )}
+      >
+        {sidebarContent}
+      </aside>
+
+      {/* Mobile overlay */}
+      {mobileOpen && (
+        <>
+          <div className="fixed inset-0 bg-black/40 z-40 md:hidden" onClick={onMobileClose} />
+          <aside className="fixed inset-y-0 left-0 w-[280px] bg-white z-50 flex flex-col md:hidden shadow-2xl animate-in slide-in-from-left duration-200">
+            {sidebarContent}
+          </aside>
+        </>
+      )}
+    </>
   );
 }

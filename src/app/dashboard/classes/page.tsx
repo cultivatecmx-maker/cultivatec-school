@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 
 import { TopBar } from "@/components/layout/top-bar";
+import { useMobileMenu } from "@/app/dashboard/layout";
 import {
   Card,
   CardContent,
@@ -212,11 +213,13 @@ export default function ClassesPage() {
   const handleDelete = (cls: Class) => { setDeleteTarget(cls); setDeleteDialogOpen(true); };
   const handleViewDetail = (cls: Class) => { setDetailClass(cls); setDetailDialogOpen(true); };
 
+  const { openMobileMenu } = useMobileMenu();
+
   return (
     <div className="min-h-screen">
-      <TopBar title="Mis Clases" subtitle="Gestiona tus clases y códigos de acceso" />
+      <TopBar title="Mis Clases" subtitle="Gestiona tus clases y códigos de acceso" onMenuClick={openMobileMenu} />
 
-      <div className="p-6 space-y-6">
+      <div className="p-4 sm:p-6 space-y-4 sm:space-y-6">
         {/* Header Actions */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div className="relative w-full sm:w-80">
@@ -230,7 +233,7 @@ export default function ClassesPage() {
         </div>
 
         {/* Summary Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
           <Card>
             <CardContent className="p-5 flex items-center gap-4">
               <div className="flex items-center justify-center w-11 h-11 rounded-xl bg-blue-50"><BookOpen className="w-5 h-5 text-blue-600" /></div>
